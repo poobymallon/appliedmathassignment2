@@ -1,4 +1,4 @@
-function day7_linkage_demo()
+function day8_cooper()
 % Solve the Jansen-leg linkage for a given crank angle and plot the result
 % using link segments from the link-to-vertex list (matches handout)
 
@@ -6,7 +6,7 @@ function day7_linkage_demo()
     leg_params = build_leg_params();
 
     % choose a crank angle (radians)
-    theta = 0.35;
+    theta = 0.0;
 
     % initial guess for [x1;y1; x2;y2; ... ; x7;y7] 
     vertex_guess_coords = [ ...
@@ -48,6 +48,32 @@ function day7_linkage_demo()
     grid on;
     title('Solved linkage (links follow link\_to\_vertex\_list)');
     xlabel('x'); ylabel('y');
+
+    %velocity plots
+    figure;
+    thetas = 0:0.005:2*pi;
+    n = length(thetas);
+    V_rootold = V_root;
+    linxs = zeros(n,1);
+    linys = zeros(n,1);
+    Vroots = zeros(n,14);
+    for i = 1:n
+        V_rootnew = compute_coords(V_rootold, leg_params, theta);
+        Vroots(i, :) = V_rootnew';
+        dVdtheta = compute_velocities(V_rootnew, leg_params, theta);
+        linxs(i) = dVdtheta(13);
+        linys(i) = dVdtheta(14);
+    end
+    compxs = zeros(n,1);
+    compys = zeros(n,1);
+    col13 = V_roots(:, 13);
+    col14 = V_roots(:, 14);
+    
+    subplot(2,1,1)
+    plot(thetas, linxs)
+
+    subplot(2,1,2)
+    plot(thetas, linys)
 end
 
 %  CORE SOLVER 
@@ -244,7 +270,21 @@ function vertex_coords_root = compute_coords(vertex_coords_guess, leg_params, th
     vertex_coords_root = root;
 end
 
+function dVdtheta = compute_velocities(vertex_coords, leg_params, theta)
+    %get the jacobian of the error function F
+    %create matrix M which is that jacobian plus I(4) and 0(4,10)
+    %create vector A which is zeros(10,1) plus -rsin plus rcos plus
+    %zeros(2,1)
+    %instantaneous velocities dVdtheta = M\A
+    f = @(V) length_error_func(V, leg_params);
+    J = approximate_jacobian(f, vertex_coords);
+    extra = [eye(4),zeros(4, 10)];
 
+    r = leg_params.crank_length;
+    M = [J;extra];
+    A = [zeros(10,1); -r*sind(theta); r*cosd(theta); 0; 0];
+    dVdtheta = M\A;
+end
 
 % SUMMARY OF WHAT THIS SCRIPT DOES
 %
