@@ -51,7 +51,7 @@ function day8_cooper()
 
     %velocity plots
     figure;
-    thetas = 0:0.005:2*pi;
+    thetas = 0:0.01:2*pi;
     n = length(thetas);
     V_rootold = V_root;
     linxs = zeros(n,1);
@@ -291,7 +291,7 @@ function dVdtheta = compute_velocities(vertex_coords, leg_params, theta)
 
     r = leg_params.crank_length;
     M = [J;extra];
-    A = [zeros(10,1); -r*sind(theta); r*cosd(theta); 0; 0];
+    A = [zeros(10,1); -r*sin(theta); r*cos(theta); 0; 0];
     dVdtheta = M\A;
 end
 
