@@ -22,7 +22,9 @@ function animate_leg_motion(num_frames, num_rotations, fps)
     L  = leg_params.link_to_vertex_list;
     c0 = leg_params.vertex_pos0(:)';  R = leg_params.crank_length;
 
-    figure; clf; hold on; axis equal; grid on;
+    clf; 
+    fig1 = figure;
+    hold on; axis equal; grid on;
     xlabel('x'); ylabel('y');
     title('Jansen leg animation');
     axis([-120 40 -120 40]);
@@ -46,6 +48,16 @@ function animate_leg_motion(num_frames, num_rotations, fps)
     trail_k = 0;
     tip_ix = 7;
 
+    
+
+    mypath = 'C:\Users\jvasquez\github\appliedmathassignment2\';
+    fname='strandbeest_animation.avi';
+    input_fname = [mypath, fname];
+    writerObj = VideoWriter(input_fname);
+    open(writerObj);
+
+    current_frame = getframe(fig1);
+    writeVideo(writerObj,current_frame);
     for k = 1:numel(thetas)
         th = thetas(k);
 
@@ -80,8 +92,11 @@ function animate_leg_motion(num_frames, num_rotations, fps)
         end
 
         drawnow;
+        current_frame = getframe(fig1);
+        writeVideo(writerObj, current_frame)
         pause(pause_per_frame);
     end
+    close(writerObj)
 end
 
 %% HELPER FUNCTIONS from day 7 and 9 (6 7)
