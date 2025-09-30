@@ -77,12 +77,16 @@ function day8_cooper()
     subplot(2,1,1)
     hold on
     plot(thetas', linxs, 'b')
-    plot(thetas(1:n-1)', dxdtheta, 'r')
+    plot(thetas(1:n-1)', dxdtheta, 'r--', "MarkerSize", 0.5)
+    title("X Direction Velocity of Leg Tip")
+    legend(["Analytical Method", "Numerical Approximation"])
 
     subplot(2,1,2)
     hold on
     plot(thetas', linys, 'b')
     plot(thetas(1:n-1)', dydtheta, 'r')
+    title("Y Direction Velocity of Leg Tip")
+    legend(["Analytical Method", "Numerical Approximation"])
 end
 
 %  CORE SOLVER 
