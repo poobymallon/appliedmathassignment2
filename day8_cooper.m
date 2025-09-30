@@ -58,22 +58,31 @@ function day8_cooper()
     linys = zeros(n,1);
     Vroots = zeros(n,14);
     for i = 1:n
-        V_rootnew = compute_coords(V_rootold, leg_params, theta);
+        V_rootnew = compute_coords(V_rootold, leg_params, thetas(i));
         Vroots(i, :) = V_rootnew';
-        dVdtheta = compute_velocities(V_rootnew, leg_params, theta);
+        dVdtheta = compute_velocities(V_rootnew, leg_params, thetas(i));
         linxs(i) = dVdtheta(13);
         linys(i) = dVdtheta(14);
+        V_rootold = V_rootnew;
     end
     compxs = zeros(n,1);
     compys = zeros(n,1);
-    col13 = V_roots(:, 13);
-    col14 = V_roots(:, 14);
-    
+    col13 = Vroots(:, 13);
+    col14 = Vroots(:, 14);
+    dx = diff(col13);
+    dy = diff(col14);
+    dtheta = diff(thetas);
+    dxdtheta = dx./dtheta';
+    dydtheta = dy./dtheta';
     subplot(2,1,1)
-    plot(thetas, linxs)
+    hold on
+    plot(thetas', linxs, 'b')
+    plot(thetas(1:n-1)', dxdtheta, 'r')
 
     subplot(2,1,2)
-    plot(thetas, linys)
+    hold on
+    plot(thetas', linys, 'b')
+    plot(thetas(1:n-1)', dydtheta, 'r')
 end
 
 %  CORE SOLVER 
